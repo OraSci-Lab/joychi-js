@@ -1,0 +1,14 @@
+{
+  "conventionalCommits.scopes": [
+    "sdk",
+    "docs",
+    "react",
+    "auth",
+    "all",
+    "integration",
+    "storage",
+    "data",
+    "rpc",
+    "testinng"
+  ]
+}

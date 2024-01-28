@@ -1,0 +1,92 @@
+name: Push & Publish (branch)
+
+on:
+  push
+
+jobs:
+  build:
+    name: 'Build Test & Lerna Publish'
+    runs-on: ubuntu-latest
+    # don't run this when the actor is mintbase team (automatic push from this script)
+    if: ${{ github.actor != 'mintbaseteam' }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.TEAM_PAT }}
+          ref: ${{ github.event.release.target_commitish }}
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Configure git and npm creds
+        run: |
+          git config --global user.name "mintbaseteam"
+          git config --global user.email "eng@mintbase.io"
+          npm config set '//registry.npmjs.org/:_authToken' "${{ secrets.NPM_MINTBASEJS_AUTH_TOKEN }}"
+
+      - name: Build & Test
+        run: |
+          echo NEAR_NETWORK=testnet >> .env
+          echo NFT_CONTRACT_ID=default_contract >> .env
+          npm ci
+          npm run lint
+          npm run build
+          npm run test
+
+      - name: Aggregate LCOV results
+        uses: RauliL/lerna-lcov-aggregate-action@master
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # publish merges to npm with ref names
+      - name: Publish, Version & Push
+        # only publish and push
+        if: ${{ github.ref_name == 'beta'}}
+        run: |
+          lerna version prerelease --yes --no-git-tag-version --no-push --preid ${{ github.ref_name }}-prerelease
+          git add --all
+          git commit -m "🤖 npm prerelease ${{ github.ref_name }}"
+          lerna publish from-package --yes --dist-tag ${{ github.event.action == 'released' && 'latest' || 'prerelease'}}
+          git push --force
+
+      - uses: chrnorm/deployment-action@v2
+        name: Create GitHub deployment
+        id: deployment
+        with:
+          token: '${{ github.token }}'
+          environment-url: https://www.npmjs.com/settings/mintbase-js/packages
+          environment: production
+
+      # sha publish previews for PRs
+      # only run these remaining steps on non-beta pushes
+      - name: Publish Preview Version (non default branch)
+        if: ${{ github.ref_name != 'beta'}}
+        id: publish
+        run: |
+          lerna version prerelease --yes --no-git-tag-version --no-push --preid ${{ github.ref_name }}-${GITHUB_SHA::7}
+          git add --all
+          git commit -m "🤖 npm prerelease ${{ github.ref_name }}"
+          lerna publish from-package --yes --dist-tag prerelease
+
+      - name: Update deployment status (success)
+        if:  ${{ steps.publish.outcome  == 'success' && github.ref_name != 'beta'}}
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ github.token }}'
+          environment-url: https://www.npmjs.com/settings/mintbase-js/packages
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status (failure)
+        if: ${{ steps.publish.outcome != 'success' && github.ref_name != 'beta'}}
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ github.token }}'
+          environment-url: https://www.npmjs.com/settings/mintbase-js/packages
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}

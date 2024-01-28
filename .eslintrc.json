@@ -1,0 +1,100 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.lint.json",
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "simple-import-sort"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
+  ],
+  "ignorePatterns": [
+    "jest.config.js",
+    "lib/**",
+    "src-v2/**",
+    "packages/data/src/graphql/codegen/**",
+    "*.js"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/camelcase": "off",
+    "brace-style": [
+      "error",
+      "1tbs",
+      {
+        "allowSingleLine": false
+      }
+    ],
+    "camelcase": "off",
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "consistent-return": "error",
+    "curly": "error",
+    "eol-last": [
+      "error",
+      "always"
+    ],
+    "indent": [
+      "error",
+      2
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 200,
+        "tabWidth": 4,
+        "ignoreStrings": true,
+        "ignoreComments": true,
+        "ignoreUrls": true
+      }
+    ],
+    "no-nested-ternary": "error",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 2,
+        "maxBOF": 1
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "space-before-blocks": [
+      "error",
+      "always"
+    ],
+    "keyword-spacing": [
+      "error",
+      {
+        "before": true,
+        "after": true
+      }
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "env": {
+    "browser": true,
+    "es6": true
+  }
+}

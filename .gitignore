@@ -1,0 +1,13 @@
+node_modules/
+coverage/
+lib/
+.hidden
+.env
+.DS_Store
+.env*
+lerna-debug.log
+npm-debug.log
+.idea
+CHANGELOG.md
+docs/gitbook-docs/
+.prettierrc.js

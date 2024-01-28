@@ -1,0 +1,60 @@
+name: Gitbook Sync
+
+on:
+  release:
+    types: [released, prereleased]
+  # Todo - come up with a reasonable strategy for previewing docs changes
+  push:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: "Mintbase/gitbook-docs"
+          ref: "main"
+          path: "docs/gitbook-docs"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ssh-key: ${{ secrets.TEAM_ACCOUNT_KEY }}
+          persist-credentials: true
+
+      - name: Copy and Publish Docs (Release or beta Merge)
+        # for now - roll out docs on merge to beta
+        if: ${{ github.event.release.tag_name || github.ref_name == 'beta' }}
+        working-directory: "docs/gitbook-docs"
+        env:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf mintbase-sdk-ref/
+          node ../migrate.js
+          git config --global user.name "mintbaseteam"
+          git config --global user.email "eng@mintbase.io"
+          git add --all
+          git commit -m "📒 🤖 [mintbase-js] ${{ github.event.release.tag_name }}" || true
+          git push origin HEAD
+
+      # This is causing too much branch pollution, not really necessary for now
+      # - name: Copy and Publish Docs (Preview)
+      #   if: ${{ github.event.head_commit.message || }}
+      #   working-directory: "docs/gitbook-docs"
+      #   env:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     rm -rf mintbase-sdk-ref/
+      #     node ../migrate.js
+      #     git config --global user.name "mintbaseteam"
+      #     git config --global user.email "eng@mintbase.io"
+      #     git checkout -b ${{ github.ref_name }}
+      #     git add --all
+      #     git commit -m "📒 🤖 [mintbase-js] ${{ github.event.head_commit.message }}" || true
+      #     git push origin HEAD --force
