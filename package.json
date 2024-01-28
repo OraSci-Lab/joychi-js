@@ -17,6 +17,11 @@
     ],
     "ext": "ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OraSci-Lab/joychi-js.git"
+  },
+
   "files": [
     "lib",
     "dist"
