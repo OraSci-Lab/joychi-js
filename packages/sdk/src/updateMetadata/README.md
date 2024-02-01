@@ -6,7 +6,7 @@
 ```javascript
 const nearAPI = require("near-api-js");
 
-const {execute, updateMetadata} = require("@joychi-js/sdk");
+const { execute, updateMetadata } = require("@joychi-js/sdk");
 
 
 // creates keyStore from a provided file
@@ -40,31 +40,35 @@ const connectionConfig = {
   explorerUrl: "https://testnet.nearblocks.io",
 };
 
-const NFT_CONTRACT = "nft.joychi.testnet"
+const JOYCHI_CONTRACT = "game1.joychi.testnet"
 const main = async () => {
-    const wallet  = await (await connect(connectionConfig)).account(ACCOUNT_ID);
-    console.log(wallet);
-    await execute({ account: wallet }, updateMetadataArgs());
+  const wallet = await (await connect(connectionConfig)).account(ACCOUNT_ID);
+
+  await execute({ account: wallet }, updateMetadataArgs());
+
 }
-
-
-
 
 const updateMetadataArgs = () => {
-    return updateMetadata({
-        tokenId: 1,
-        petAttributes: {
-            petName: "Test",
-            image: "abc.com",
-            score: 100,
-            level: 1,
-            status: 0,
-            star: 3,
-        },
-        contractAddress: NFT_CONTRACT,
-    })
-}
+  const Status = {
+    HAPPY: 'HAPPY',
+    HUNGRY: 'HUNGRY',
+    STARVING: 'STARVING',
+    DYING: 'DYING',
+  };
 
+  return updateMetadata({
+    tokenId: 1,
+    petAttributes: {
+      pet_name: "Test",
+      image: "abc.com",
+      score: 100,
+      level: 1,
+      status: Status.HAPPY,
+      star: 3,
+    },
+    contractAddress: JOYCHI_CONTRACT,
+  })
+}
 
 main().catch(console.error);
 
@@ -83,7 +87,7 @@ main().catch(console.error);
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@joychi-js/sdk": "^0.5.1-beta-prerelease.2",
+    "@joychi-js/sdk": "^0.5.1-beta-prerelease.6",
     "near-api-js": "^3.0.2"
   }
 }
