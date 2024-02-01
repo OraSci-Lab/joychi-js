@@ -1,7 +1,7 @@
 import { mbjs } from '../config/config';
 import { DEPOSIT_FOR_TRANSFER, GAS, GAS_FOR_TRANSFER } from '../constants';
 import { ERROR_MESSAGES } from '../errorMessages';
-import { NearContractCall, NFT_METHOD_NAMES, UpdateMetadataArgs, UpdateMetadataArgsResponse } from '../types';
+import { NearContractCall, JOYCHI_METHOD_NAMES, UpdateMetadataArgs, UpdateMetadataArgsResponse } from '../types';
 
 
 /**
@@ -23,10 +23,10 @@ export const updateMetadata = ({
   return {
     contractAddress: contractAddress || mbjs.keys.contractAddress,
     args: {
-      token_id: tokenId,
+      pet_id: tokenId,
       pet_attribute: petAttributes
     },
-    methodName: NFT_METHOD_NAMES.NFT_UPDATE_METADATA,
+    methodName: JOYCHI_METHOD_NAMES.JOYCHI_UPDATE_METADATA_ATTRIBUTE,
     deposit: 0,
     gas: GAS,
   };

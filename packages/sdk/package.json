@@ -1,6 +1,6 @@
 {
   "name": "@joychi-js/sdk",
-  "version": "0.5.1-beta-prerelease.2",
+  "version": "0.5.1-beta-prerelease.6",
   "description": "Core functions for  Joychi JS SDK",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

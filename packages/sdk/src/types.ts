@@ -30,8 +30,8 @@ export enum FT_METHOD_NAMES {
   STORAGE_DEPOSIT = 'storage_deposit',
 }
 
-export enum NFT_METHOD_NAMES {
-  NFT_UPDATE_METADATA = 'update_metadata_pet',
+export enum JOYCHI_METHOD_NAMES {
+  JOYCHI_UPDATE_METADATA_ATTRIBUTE = 'delegate_update_attribute',
 
 }
 
@@ -213,15 +213,14 @@ export type ListArgs = {
 }
 
 export enum Status {
-  HAPPY = 'happy',
-  HUNGRY = 'hungry',
-  STARVING = 'starving',
-  DYING = 'dying',
-
+  HAPPY = 'HAPPY',
+  HUNGRY = 'HUNGRY',
+  STARVING = 'STARVING',
+  DYING = 'DYING',
 
 }
 export type PetAttribute =  {
-  petName: string;
+  pet_name: string;
   image: string;
   score: number;
   level: number;
@@ -230,14 +229,14 @@ export type PetAttribute =  {
 };
 
 export type UpdateMetadataArgs = {
-  tokenId: string;
+  tokenId: number;
   petAttributes: PetAttribute;
   contractAddress?: string;
 
 }
 
 export interface UpdateMetadataArgsResponse {
-  token_id: string;
+  pet_id: number;
   pet_attribute: PetAttribute;
 }
 
